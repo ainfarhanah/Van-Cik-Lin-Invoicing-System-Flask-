@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ title }}{% endblock %}</title>
+    <!-- Bootstrap-->
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <script src="/static/bootstrap/js/bootstrap.bundle.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/png" href="data:image/png;base64,{{logo_base64}}">
+</head>
+<body>
+    <main>
+        <div class="container-fluid">
+            <div class="container">
+                <!-- Flash messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                     {% if messages %}
+                         {% for category, message in messages %}
+                             <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                 {{ message }}
+                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                             </div>
+                         {% endfor %}
+                     {% endif %}
+                 {% endwith %}
+             <div class="card">
+                <div class="logo">
+                    <h4 class="title">{{title}}</h4>
+                    <img src="data:image/png;base64,{{logo_base64}}" class="logo-img">
+                </div>
+                {% block content %}
+                {% endblock %}
+             </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
