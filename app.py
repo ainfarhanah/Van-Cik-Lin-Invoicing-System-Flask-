@@ -22,7 +22,11 @@ def inject_logo():
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    title = "Login"
+    if 'loggedin' not in session:
+        return render_template('login.html')
+    else:
+        return redirect(url_for('dashboard'))
 
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -54,7 +58,46 @@ def register():
         
     return render_template('register.html', title=title)
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    title = "Login"
+    if 'loggedin' not in session:
+        if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+            username = request.form['username']
+            password = request.form['password']
 
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("SELECT * FROM users WHERE username = %s",(username,))
+            user = cursor.fetchone()
+
+            if user and check_password_hash(user['password'], password):
+                session['loggedin'] = True
+                session['id'] = user['userID']
+                session['username'] = user['username']
+                flash('You have successfully logged in', 'success')
+                return redirect(url_for('dashboard'))
+            else:
+                flash('Incorrect username/password!', 'danger')
+                return redirect(url_for('login'))
+        return render_template('login.html', title=title)
+    else:
+        return redirect(url_for('dashboard'))
+    
+@app.route('/dashboard')
+def dashboard():
+    if 'loggedin' in session:
+        title = "Dashboard"
+        return render_template('dashboard.html', username=session['username'], title=title)
+    else:
+        return redirect(url_for('login'))
+    
+@app.route('/logout')
+def logout():
+    session.pop('loggedin', None)
+    session.pop('id', None)
+    session.pop('username', None)
+    flash('You have been logged out.', 'success')
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,13 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
+    <title>{{ title }}</title>
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <!-- Custom CSS-->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Font Awesome-->
+    <script src="https://kit.fontawesome.com/856660b0de.js" crossorigin="anonymous"></script>
+    <!-- jQuery-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS-->
+    <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS-->
 
 </head>
+
 <body>
-    {% block content %}
-    {% endblock %}
+    {% if not session['loggedin'] %}
+    <main>
+        <div class="auth-wrapper">
+            <div class="auth-container">
+                <!-- Flash messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <div class="auth-card">
+                    <div class="logo">
+                        <h4 class="auth-title">{{title}}</h4>
+                        <img src="data:image/png;base64,{{logo_base64}}" class="logo-img">
+                    </div>
+                    {% block login_form %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </main>
+    {% endif %}
+    {% if session['loggedin'] %}
+    <main>
+        <div class="wrapper">
+            <aside id="sidebar">
+                <div class="h-100">
+                    <div class="sidebar-logo">
+                        <a href="#" class="sidebar-link"><img src="data:image/png;base64,{{logo_base64}}" class="logo">
+                            Van Cik Lin</a>
+                    </div>
+                    <ul class="sidebar-nav">
+                        <li class="sidebar-item">
+                            <a href="/dashboard" class="sidebar-link"><i class="fa-solid fa-gauge"></i>Dashboard</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link collapsed" data-bs-target="#customers"
+                                data-bs-toggle="collapse" aria-expanded="false"><i
+                                    class="fa-solid fa-users"></i>Customers</a>
+                            <ul class="sidebar-dropdown list-unstyled collapse" id="customers"
+                                data-bs-parent="#sidebar">
+                                <li class="sidebar-item">
+                                    <a href="#" class="sidebar-link">Customer Records</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link collapsed" data-bs-target="#services"
+                                data-bs-toggle="collapse" aria-expanded="false"><i
+                                    class="fa-solid fa-van-shuttle"></i>Services</a>
+                            <ul class="sidebar-dropdown list-unstyled collapse" id="services" data-bs-parent="#sidebar">
+                                <li class="sidebar-item">
+                                    <a href="#" class="sidebar-link">Service Records</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link collapsed" data-bs-target="#invoices"
+                                data-bs-toggle="collapse" aria-expanded="false"><i
+                                    class="fa-solid fa-file-invoice-dollar"></i>Invoices</a>
+                            <ul class="sidebar-dropdown list-unstyled collapse" id="invoices" data-bs-parent="#sidebar">
+                                <li class="sidebar-item">
+                                    <a href="#" class="sidebar-link">Invoice Lists</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link collapsed" data-bs-target="#payments"
+                                data-bs-toggle="collapse" aria-expanded="false"><i
+                                    class="fa-solid fa-dollar-sign"></i>Payments</a>
+                            <ul class="sidebar-dropdown list-unstyled collapse" id="payments" data-bs-parent="#sidebar">
+                                <li class="sidebar-item">
+                                    <a href="#" class="sidebar-link">Payment Records</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+            </aside>
+            <!-- Navbar-->
+            <div class="main">
+                <nav class="navbar navbar-expand px-3 border-bottom">
+                    <button class="btn" id="sidebar-toggle" type="button">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse navbar">
+                        <ul class="navbar-nav d-flex">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-solid fa-user"></i> {{ session.username }}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <!-- Main Content-->
+                <main class="content px-3 py-2">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+
+                    {% block content %}
+                    {% endblock %}
+                </main>
+                <!-- Footer -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row text-muted">
+                            <div class="col-12 text-center">
+                                <p class="mb-0">
+                                    <a href="#" class="text-muted">
+                                        Van Cik Lin &copy; 2025
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </main>
+    {% endif %}
 </body>
+    <script src="/static/js/script.js"></script>
+
+
 </html>
