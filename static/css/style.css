@@ -193,3 +193,8 @@ img.logo {
     transform: rotate(45deg);
     transition: all .2s ease-out;
 }
+
+/* Profile Form */
+.mx-auto {
+    max-width: 480px;
+}

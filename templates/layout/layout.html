@@ -15,8 +15,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap JS-->
     <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS-->
-
+    <!-- Favicon-->
+    <link rel="icon" type="image/png" href="data:image/png;base64,{{logo_base64}}">
 </head>
 
 <body>
@@ -115,7 +115,7 @@
                                     <i class="fa-solid fa-user"></i> {{ session.username }}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
                                 </ul>
