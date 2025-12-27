@@ -3,11 +3,96 @@
 {% block content %}
 <div class="card content">
     <div class="card-header">
-        <h3>Customers</h3>
+        <div class="row">
+            <div class="col">
+                <h5 class="card-title">
+                    Customer Record
+                </h5>
+                <h6 class="card-subtitle">
+                    Customer contact list
+                </h6>
+            </div>
+            <div class="col">
+                <div class="btnmodal">
+                    <button type="button" class="btn btn-warning float-end" data-bs-toggle="modal"
+                        data-bs-target="#addCustomerModal">Add Customer</button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="card-body">
-        <h5 class="card-title">Customers</h5>
-        <p class="card-text">This is your customers page.</p>
+        <table id="customerTable" class="display">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Customer Name</th>
+                    <th>Customer Phone</th>
+                    <th>Customer Location</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ customer.custName }}</td>
+                    <td>{{ customer.custPhone }}</td>
+                    <td>{{ customer.custLocation }}</td>
+                    <td>
+                        <a href="#" class="btn btn-primary">Edit</a>
+                        <a href="#" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- Add Customer Modal-->
+    <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCustomerModalLabel">Add Customer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ url_for('customers') }}" method="POST">
+                    <div class="modal-body">
+
+                        <div class="mb-3">
+                            <label for="custName" class="form-label">Customer Name</label>
+                            <input type="text" class="form-control" id="custName" name="custName">
+                        </div>
+                        <div class="mb-3">
+                            <label for="custPhone" class="form-label">Customer Phone</label>
+                            <input type="text" class="form-control" id="custPhone" name="custPhone">
+                        </div>
+                        <div class="mb-3">
+                            <label for="custLocation" class="form-label">Customer Location</label>
+                            <select class="form-select" aria-label="Default select example" name="custLocation">
+                                <option selected>Choose Location</option>
+                                <option value="Rosana Ville">Rosana Ville</option>
+                                <option value="Seroja">Seroja</option>
+                                <option value="Teratai">Teratai</option>
+                                <option value="Cluster 7">Cluster 7</option>
+                                <option value="Cluster 8">Cluster 8</option>
+                                <option value="Cluster 9">Cluster 9</option>
+                                <option value="Cluster 10">Cluster 10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-warning">Add Customer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function () {
+                $('#customerTable').DataTable();
+            });
+        </script>
     </div>
 </div>
 {% endblock %}

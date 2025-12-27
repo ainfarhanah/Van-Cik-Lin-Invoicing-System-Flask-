@@ -218,3 +218,12 @@ img.logo {
     height: 60px;
     width: 60px;
 }
+
+/* --- Customers --- */
+.card-header {
+    vertical-align: middle;
+}
+
+.btnmodal {
+    margin-bottom: 10px;
+}

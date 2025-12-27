@@ -138,11 +138,28 @@ def updateprofile():
         flash('Please log in to access this page.', 'danger')
         return redirect(url_for('login'))
 
-@app.route('/customers')
+@app.route('/customers', methods=['GET', 'POST'])
 def customers():
+    user_id = session['id']
+
     if 'loggedin' in session:
         title = "Customers"
-        return render_template('customers.html', title=title)
+
+        if request.method == 'POST':
+            custName = request.form.get('custName')
+            custPhone = request.form.get('custPhone')
+            custLocation = request.form.get('custLocation')
+
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("INSERT INTO customers (custName, custPhone, custLocation,userID) VALUES (%s, %s, %s,%s)", (custName, custPhone, custLocation, user_id))
+            mysql.connection.commit()
+            flash('Customer added successfully.', 'success')
+            return redirect(url_for('customers'))
+
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT * FROM customers WHERE userID = %s", (user_id,))
+        customers = cursor.fetchall()
+        return render_template('customers.html', title=title, customers=customers)
     else:
         return redirect(url_for('login'))
 if __name__ == '__main__':
