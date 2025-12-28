@@ -123,12 +123,12 @@ def updateprofile():
         if new_password:
             hashed = generate_password_hash(new_password)
             cursor.execute(
-            'UPDATE users SET username=%s, email=%s, password=%s WHERE userID=%s',
+            "UPDATE users SET username=%s, email=%s, password=%s WHERE userID=%s",
             (username, email, hashed, session['id'])
             )
         else:
             cursor.execute(
-            'UPDATE users SET username=%s, email=%s WHERE userID=%s',
+            "UPDATE users SET username=%s, email=%s WHERE userID=%s",
             (username, email, session['id'])
             )
         mysql.connection.commit()
@@ -167,6 +167,7 @@ def customers():
 def update_customer(custID):
     if 'loggedin' in session:
         title = "Update Customer"
+        user_id = session['id']
         custName = request.form['custName']
         custPhone = request.form['custPhone']
         custLocation = request.form['custLocation']
@@ -190,6 +191,30 @@ def delete_customer(custID):
         cursor.close()
         flash('Customer deleted successfully.', 'success')
         return redirect(url_for('customers'))
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/services', methods=['GET', 'POST'])
+def services():
+    if 'loggedin' in session:
+        user_id = session['id']
+        title = "Services"
+        if request.method == 'POST':
+            serviceName = request.form['serviceName']
+            serviceDesc = request.form['serviceDesc']
+            serviceFee = request.form['serviceFee']
+            serviceStatus = request.form['serviceStatus']
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("""INSERT INTO services (serviceName, serviceDesc, serviceFee, serviceStatus,userID) 
+            VALUES (%s, %s, %s, %s, %s)""", (serviceName, serviceDesc, serviceFee, serviceStatus, user_id))
+            mysql.connection.commit()
+            flash('Service added successfully.', 'success')
+            return redirect(url_for('services'))
+        
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT * FROM services WHERE userID = %s", (user_id,))
+        services = cursor.fetchall()
+        return render_template('services.html', title=title, services=services)
     else:
         return redirect(url_for('login'))
         

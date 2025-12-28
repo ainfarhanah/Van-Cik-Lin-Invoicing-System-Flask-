@@ -1,0 +1,92 @@
+{% extends "layout/layout.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="card content">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">
+                <h5 class="card-title">
+                    Service Record
+                </h5>
+                <h6 class="card-subtitle">
+                    Service list
+                </h6>
+            </div>
+            <div class="col">
+                <div class="btnmodal">
+                    <button type="button" class="btn btn-warning float-end" data-bs-toggle="modal"
+                        data-bs-target="#addServiceModal"><i class="fa-solid fa-plus"></i>Add Service</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table id="myTable" class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Service Name</th>
+                    <th>Service Description</th>
+                    <th>Service Price</th>
+                    <th>Service Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for service in services %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ service.serviceName }}</td>
+                    <td>{{ service.serviceDesc }}</td>
+                    <td>{{ 'RM %.2f' | format(service.serviceFee) }}</td>
+                    <td>{{ service.serviceStatus }}</td>
+                    <td>
+                        <a href="#"><i class="fa-solid fa-pen text-secondary"></i></a>
+                        <a href="#"><i class="fa-solid fa-trash text-danger"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<!--Add Service Modal-->
+<div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addServiceModalLabel">Add Service</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('services') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="serviceName" class="form-label">Service Name</label>
+                        <input type="text" class="form-control" id="serviceName" name="serviceName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="serviceDescription" class="form-label">Service Description</label>
+                        <input type="text" class="form-control" id="serviceDesc" name="serviceDesc">
+                    </div>
+                    <div class="mb-3">
+                        <label for="servicePrice" class="form-label">Service Price</label>
+                        <input type="number" class="form-control" id="serviceFee" name="serviceFee">
+                    </div>
+                    <div class="mb-3">
+                        <label for="serviceStatus" class="form-label">Service Status</label>
+                        <select class="form-select" aria-label="Default select example" name="serviceStatus">
+                            <option value="" disabled selected>Select Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-warning">Add Service</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

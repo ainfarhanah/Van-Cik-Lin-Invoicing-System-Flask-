@@ -15,5 +15,5 @@ window.addEventListener('load', () => {
 
 /* DataTable */
 $(document).ready(function () {
-    $('#customerTable').DataTable();
+    $('#myTable').DataTable();
 });
