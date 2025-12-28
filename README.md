@@ -36,14 +36,6 @@ erDiagram
 		created_at timestamp  ""  
 	}
 
-    CHILDREN{
-        int childID
-        string childName
-        string childCategory 
-        int childAge
-        int custID
-        created_at timestamp
-    }
 
 	SERVICES {
 		int serviceID  ""  
@@ -91,7 +83,6 @@ erDiagram
 	USERS||--o{PAYMENTS:"creates"
 	PAYMENTS||--o{INVOICES:"has"
 	CUSTOMERS||--o{PAYMENTS:"pay"
-    CUSTOMERS ||--o{ CHILDREN: "has"
 ```
 
 
