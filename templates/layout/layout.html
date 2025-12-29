@@ -22,10 +22,11 @@
     <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- Favicon-->
     <link rel="icon" type="image/png" href="data:image/png;base64,{{logo_base64}}">
+    <script src="https://unpkg.com/htmx.org@1.9.11"></script>
 </head>
 
 <body>
-    {% if not session['loggedin'] %}
+    {% if not session.get('loggedin') %}
     <main>
         <div class="auth-wrapper">
             <div class="auth-container">
@@ -51,14 +52,14 @@
         </div>
     </main>
     {% endif %}
-    {% if session['loggedin'] %}
+    {% if session.get('loggedin') %}
     <!--Loading Spinner-->
     <div class="spinner-wrapper">
         <div class="spinner-border text-warning" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
-    <main>
+    <main id="content">
         <div class="wrapper">
             <aside id="sidebar">
                 <div class="h-100">
@@ -174,7 +175,6 @@
     {% endif %}
 </body>
 <script src="/static/js/script.js"></script>
-<!-- DataTables-->
-<script src="/static/datatables/datatables.min.js"></script>
+
 
 </html>
