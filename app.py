@@ -259,5 +259,64 @@ def delete_service(serviceID):
         return redirect(url_for('services'))
     else:
         return redirect(url_for('login'))
+
+@app.route('/invoices', methods=['GET', 'POST'])
+def invoices():
+    if 'loggedin' in session:
+        user_id = session['id']
+        title = "Invoices"
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT * FROM customers WHERE userID = %s", (user_id,))
+        customers = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM services WHERE userID = %s", (user_id,))
+        services = cursor.fetchall()    
+        cursor.execute("""
+        SELECT i.*, c.custName
+        FROM invoices i
+        JOIN customers c ON i.custID = c.custID
+        WHERE i.userID = %s
+        """, (user_id,))
+        invoices = cursor.fetchall()
+
+        if request.method == 'POST':
+            custID = request.form.get('custID')
+            invDate = request.form.get('invDate')
+            invDue = request.form.get('invDue')
+            invSubtotal = request.form.get('invSubtotal')
+            invPaid = request.form.get('invPaid')
+            invTotal = request.form.get('invTotal')
+            serviceID = request.form.get('serviceID[]')
+            itemDesc = request.form.get('itemDesc[]')
+            itemQty = request.form.get('itemQty[]')
+            itemPrice = request.form.get('itemPrice[]')
+            itemAmt = request.form.get('itemAmt[]')
+            invStatus = 'Paid' if float(invPaid)>0 else 'Unpaid'
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("""
+            INSERT INTO invoices (custID, invDate, invDue, invSubtotal, invPaid, invTotal, invStatus, userID)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (custID, invDate, invDue, invSubtotal, invPaid, invTotal, invStatus, user_id))
+            mysql.connection.commit()
+            invID = cursor.lastrowid #get the last inserted row id
+            for i in range(len(itemDesc)):
+                cursor.execute("""
+                INSERT INTO invoice_items (invID, serviceID, itemDesc, itemPrice, itemQty, itemAmt, userID)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """, (invID, serviceID[i], itemDesc[i], itemPrice[i], itemQty[i], itemAmt[i], user_id))
+            mysql.connection.commit()
+            cursor.close()
+            if custID == 'null':
+                flash('Please create or choose customer name', 'warning')
+                return redirect(url_for('invoices'))
+            else:
+                flash('Invoice added successfully.', 'success')
+                return redirect(url_for('invoices'))
+
+        return render_template('invoices.html', title=title, invoices=invoices, customers=customers, services=services)
+    else:
+        return redirect(url_for('login'))
+
+
 if __name__ == '__main__':
     app.run(debug=True)
