@@ -25,8 +25,9 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Invoice ID</th>
+                    <th>Customer Name</th>
                     <th>Invoice Date</th>
+                    <th>Invoice Created Date</th>
                     <th>Invoice Amount</th>
                     <th>Invoice Status</th>
                     <th>Actions</th>
@@ -36,10 +37,17 @@
                 {% for invoice in invoices %}
                 <tr>
                     <td>{{ loop.index }}</td>
-                    <td>{{ invoice.invID }}</td>
-                    <td>{{ invoice.invDate }}</td>
+                    <td>{{ invoice.custName }}</td>
+                    <td>{{ invoice.invDate.strftime('%d-%m-%Y') }}</td>
+                    <td>{{ invoice.created_at.strftime('%d-%m-%Y') }}</td>
                     <td>{{ invoice.invTotal }}</td>
-                    <td>{{ invoice.invStatus }}</td>
+                    <td>
+                        {% if invoice.invStatus == 'Paid' %}
+                        <span class="badge bg-success">Success</span>
+                        {% else %}
+                        <span class="badge bg-danger">{{ invoice.invStatus }}</span>
+                        {% endif %}
+                    </td>
                     <td>
                         <a href="#" data-bs-toggle="modal" data-bs-target="#updateInvoiceModal"><i
                                 class="fa-solid fa-pen text-secondary"></i></a>
@@ -55,13 +63,13 @@
 <!-- Add Invoice Modal -->
 <div class="modal fade" id="addInvoiceModal" tabindex="-1" aria-labelledby="addInvoiceModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addInvoiceModalLabel">Add Invoice</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="#" method="post">
+        <form action="{{ url_for('invoices') }}" method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addInvoiceModalLabel">Add Invoice</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
                     <div class="row">
                         <div class="col-sm">
                             <label for="customer"><strong>Customer:</strong></label>
@@ -84,30 +92,33 @@
                     <table class="table" id="dataTable">
                         <thead>
                             <tr>
-                                <th>Service</th>
-                                <th>Service Descriptions</th>
-                                <th>Service Fee</th>
-                                <th>Qty</th>
-                                <th>Service Amount</th>
-                                <th>Action</th>
+                                <th class="col-grow">Service</th>
+                                <th class="col-grow">Service Descriptions</th>
+                                <th class="col-grow">Service Fee</th>
+                                <th class="col-grow">Quantity</th>
+                                <th class="col-shrink">Service Amount</th>
+                                <th class="col-shrink">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>
-                                    <select id="serviceID[]" name="serviceID[]" class="form-control" required>
-                                        <option value="" disabled selected>Select a service</option>
-                                        {% for service in services %}
-                                        <option value="{{ service.serviceID }}">{{ service.serviceName}}</option>
+                                    <select id="serviceID[]" name="serviceID[]" class="form-control service-selector"
+                                        required>
+                                        <option value="" disabled selected>Select Service</option>
+                                        {% for item in services %}
+                                        <option value="{{ item['serviceID'] }}" data-fee="{{ item['serviceFee'] }}">
+                                            {{ item['serviceName'] }}
+                                        </option>
                                         {% endfor %}
                                     </select>
                                 </td>
                                 <td><input class="form-control" type="text" name="itemDesc[]"
                                         placeholder="Service Descriptions" required></td>
                                 <td><input class="form-control item-price" type="number" name="itemPrice[]"
-                                        placeholder="Service Fee" required></td>
+                                        placeholder="Fee" required></td>
                                 <td><input class="form-control item-qty" type="number" name="itemQty[]"
-                                        placeholder="Quantity" required></td>
+                                        placeholder="Qty" required></td>
                                 <td><input class="form-control" type="number" name="itemAmt[]" placeholder="Amount"
                                         required>
                                 </td>
@@ -124,27 +135,27 @@
                             <div class="input-group mb-3">
                                 <span class="input-group-text">Subtotal</span>
                                 <input type="number" class="form-control" placeholder="Subtotal" aria-label="Subtotal"
-                                    name="invSubtotal" id="invSubtotal">
+                                    name="invSubtotal" id="invSubtotal" readonly>
                             </div>
                             <div class="input-group mb-3">
                                 <span class="input-group-text">Paid</span>
                                 <input type="number" class="form-control" placeholder="Paid" aria-label="Paid"
-                                    name="invPaid" id="invPaid">
+                                    name="invPaid" id="invPaid" value="0.0" readonly>
                             </div>
                             <div class="input-group mb-3">
                                 <span class="input-group-text">Due</span>
                                 <input type="number" class="form-control" placeholder="Due" aria-label="Due"
-                                    name="invDue" id="invDue">
+                                    name="invTotal" id="invTotal" readonly>
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-warning">Save changes</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-warning">Save changes</button>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 {% endblock %}

@@ -227,3 +227,18 @@ img.logo {
 .btnmodal {
     margin-bottom: 10px;
 }
+
+/* --- Invoice --- */
+#dataTable {
+    table-layout: auto;
+    width: 100%;
+}
+
+.col-grow {
+    width: auto;
+}
+
+.col-shrink {
+    width: 0.5%;
+    white-space: nowrap;
+}

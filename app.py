@@ -292,6 +292,7 @@ def invoices():
             itemPrice = request.form.get('itemPrice[]')
             itemAmt = request.form.get('itemAmt[]')
             invStatus = 'Paid' if float(invPaid)>0 else 'Unpaid'
+
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute("""
             INSERT INTO invoices (custID, invDate, invDue, invSubtotal, invPaid, invTotal, invStatus, userID)
@@ -299,11 +300,12 @@ def invoices():
             """, (custID, invDate, invDue, invSubtotal, invPaid, invTotal, invStatus, user_id))
             mysql.connection.commit()
             invID = cursor.lastrowid #get the last inserted row id
-            for i in range(len(itemDesc)):
+
+            for serviceID, itemDesc, itemQty, itemPrice, itemAmt in zip(serviceID, itemDesc, itemQty, itemPrice, itemAmt):
                 cursor.execute("""
-                INSERT INTO invoice_items (invID, serviceID, itemDesc, itemPrice, itemQty, itemAmt, userID)
+                INSERT INTO items (invID, serviceID, itemDesc, itemPrice, itemQty, itemAmt, userID)
                 VALUES (%s, %s, %s, %s, %s, %s, %s)
-                """, (invID, serviceID[i], itemDesc[i], itemPrice[i], itemQty[i], itemAmt[i], user_id))
+                """, (invID, serviceID, itemDesc, itemPrice, itemQty, itemAmt, user_id))    
             mysql.connection.commit()
             cursor.close()
             if custID == 'null':
