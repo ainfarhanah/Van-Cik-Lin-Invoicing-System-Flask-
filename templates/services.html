@@ -114,7 +114,8 @@
                             </div>
                             <form action="{{ url_for('delete_service', serviceID=service.serviceID) }}" method="POST">
                                 <div class="modal-body">
-                                    <p>Are you sure you want to delete this service?</p>
+                                    <p>Are you sure you want to delete this service <strong>
+                                            {{service.serviceName}}</strong>?</p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
