@@ -40,7 +40,7 @@
                     <td>{{ invoice.custName }}</td>
                     <td>{{ invoice.invDate.strftime('%d-%m-%Y') }}</td>
                     <td>{{ invoice.created_at.strftime('%d-%m-%Y') }}</td>
-                    <td>{{ invoice.invTotal }}</td>
+                    <td>{{ 'RM %.2f'| format(invoice.invTotal) }}</td>
                     <td>
                         {% if invoice.invStatus == 'Paid' %}
                         <span class="badge bg-success">Success</span>
@@ -50,7 +50,7 @@
                     </td>
                     <td>
                         <a href="#" data-bs-toggle="modal" data-bs-target="#updateInvoiceModal"><i
-                                class="fa-solid fa-pen text-secondary"></i></a>
+                                class="fa-solid fa-file-invoice text-secondary"></i></a>
                         <a href="#" data-bs-toggle="modal" data-bs-target="#deleteInvoiceModal"><i
                                 class="fa-solid fa-trash text-danger"></i></a>
                     </td>

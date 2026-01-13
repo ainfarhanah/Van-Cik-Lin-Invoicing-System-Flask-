@@ -47,19 +47,20 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#updateServiceModal"><i
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#updateServiceModal{{service.serviceID}}"><i
                                 class="fa-solid fa-pen text-secondary"></i></a>
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#deleteServiceModal"><i
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#deleteServiceModal{{service.serviceID}}"><i
                                 class="fa-solid fa-trash text-danger"></i></a>
                     </td>
                 </tr>
                 <!--Update Service Modal-->
-                <div class="modal fade" id="updateServiceModal" tabindex="-1" aria-labelledby="updateServiceModalLabel"
-                    aria-hidden="true">
+                <div class="modal fade" id="updateServiceModal{{service.serviceID}}" tabindex="-1"
+                    aria-labelledby="updateServiceModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="updateServiceModalLabel">Update Service</h5>
+                                <h5 class="modal-title" id="updateServiceModalLabel{{service.serviceID}}">Update Service
+                                </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
@@ -86,9 +87,9 @@
                                             name="serviceStatus">
                                             <option value="" disabled>Select Status</option>
                                             <option value="Active" {% if service.serviceStatus=='Active' %}selected{%
-                                                endif %}">Active</option>
-                                            <option value="Inactive" {% if service.serviceStatus=='Inactive'
-                                                %}selected{% endif %}">Inactive</option>
+                                                endif %}>Active</option>
+                                            <option value="Inactive " {% if service.serviceStatus=='Inactive'
+                                                %}selected{% endif %}>Inactive</option>
                                         </select>
                                     </div>
                                 </div>
@@ -102,8 +103,8 @@
                     </div>
                 </div>
                 <!--Delete Service Modal-->
-                <div class="modal fade" id="deleteServiceModal" tabindex="-1" aria-labelledby="deleteServiceModalLabel"
-                    aria-hidden="true">
+                <div class="modal fade" id="deleteServiceModal{{service.serviceID}}" tabindex="-1"
+                    aria-labelledby="deleteServiceModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
